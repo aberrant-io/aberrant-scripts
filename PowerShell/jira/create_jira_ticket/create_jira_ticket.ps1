@@ -32,7 +32,7 @@ param (
 $jiraUrl = "https://your-jira-url.atlassian.net"
 
 # The key for your Jira project (e.g., "PROJ", "TEST")
-$projectKey = "AB"
+$projectKey = "PROJ"
 
 $email = "user@example.com"
 $apiToken = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
