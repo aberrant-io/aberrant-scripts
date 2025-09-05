@@ -1,0 +1,36 @@
+{
+    "name": "Close Jira Ticket",
+    "description": "Closes a ticket in Jira with given number",
+    "fileName": "close_jira_ticket.ps1",
+    "inputParameters": [
+        {
+            "direction": "IN",
+            "name": "TicketNumber",
+            "label": "Ticket Number",
+            "description": "The number of the Jira ticket to close",
+            "parameterType": "string",
+            "parameterLength": 20,
+            "required": true
+        }
+    ],
+    "outputParameters": [
+        {
+            "direction": "OUT",
+            "name": "ClosedTicketNumber",
+            "label": "Closed Ticket Number",
+            "description": "The ID of the Jira ticket that was closed (e.g. PROJ-123)",
+            "parameterType": "string",
+            "parameterLength": 20,
+            "scope": "GLOBAL"
+        },
+        {
+            "direction": "OUT",
+            "name": "ClosedTicketUrl",
+            "label": "Closed Ticket Url",
+            "description": "The URL of the Jira ticket that was closed",
+            "parameterType": "string",
+            "parameterLength": 256,
+            "scope": "GLOBAL"
+        }
+    ]
+}
