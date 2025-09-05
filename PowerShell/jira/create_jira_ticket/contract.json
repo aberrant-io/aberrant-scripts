@@ -1,0 +1,45 @@
+{
+    "name": "Create Jira Ticket",
+    "description": "Creates a ticket in Jira with given name and description",
+    "fileName": "create_jira_ticket.ps1",
+    "inputParameters": [
+        {
+            "direction": "IN",
+            "name": "TicketName",
+            "label": "Ticket Name",
+            "description": "The title of the Jira ticket to create",
+            "parameterType": "string",
+            "parameterLength": 100,
+            "required": true
+        },
+        {
+            "direction": "IN",
+            "name": "TicketDescription",
+            "label": "Ticket Description",
+            "description": "The description of the Jira ticket to create",
+            "parameterType": "string",
+            "parameterLength": 200,
+            "required": true
+        }
+    ],
+    "outputParameters": [
+        {
+            "direction": "OUT",
+            "name": "TicketNumber",
+            "label": "Ticket Number",
+            "description": "The ID of the Jira ticket that was created (e.g. PROJ-123)",
+            "parameterType": "string",
+            "parameterLength": 20,
+            "scope": "GLOBAL"
+        },
+        {
+            "direction": "OUT",
+            "name": "TicketUrl",
+            "label": "Ticket Url",
+            "description": "The URL of the Jira ticket that was created",
+            "parameterType": "string",
+            "parameterLength": 256,
+            "scope": "GLOBAL"
+        }
+    ]
+}

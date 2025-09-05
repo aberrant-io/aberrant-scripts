@@ -29,13 +29,13 @@ param (
 # IMPORTANT: Update these variables with your Jira instance details.
 
 # Your full Jira URL (e.g., https://aberrant.atlassian.net)
-$jiraUrl = "https://aberrant.atlassian.net"
+$jiraUrl = "https://your-jira-url.atlassian.net"
 
 # The key for your Jira project (e.g., "PROJ", "TEST")
 $projectKey = "AB"
 
-$email = "andrew.arace@gmail.com"
-$apiToken = "ATATT3xFfGF04kCpzcnTHDi3EDJO5qhq_P3Ijy8scu4DZ9YiEV6xsWVtsDdSXAjtNMLUWpMK4T64s2MoCXZYkmdrFdlSDx7ysNuxy0pW9ofA1IHyVnuvGQ8rGXk2siFPoGkISB9gm3cMXP-Gbg_QR0YKJE0vBtu5P0oBDCvVPUp7mroM1IhGD1g=5A75205E"
+$email = "user@example.com"
+$apiToken = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # The name of the issue type you want to create (e.g., "Task", "Story", "Bug", "Epic")
 $issueTypeName = "Task"

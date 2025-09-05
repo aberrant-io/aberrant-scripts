@@ -1,0 +1,26 @@
+{
+    "name": "GitHub Users",
+    "description": "Reads all users and contributors to a GitHub repository and writes to CSV. Requires the GitHub CLI to be installed and authorized.",
+    "fileName": "github_users.ps1",
+    "inputParameters": [
+        {
+            "direction": "IN",
+            "name": "owner",
+            "label": "Repository Owner",
+            "description": "The owner name (user or organization) of the repository (e.g. 'aberrant-io')",
+            "parameterType": "string",
+            "parameterLength": 50,
+            "required": true
+        },
+        {
+            "direction": "IN",
+            "name": "repo",
+            "label": "Repository Name",
+            "description": "The name of the repository (e.g. 'aberrant')",
+            "parameterType": "string",
+            "parameterLength": 50,
+            "required": true
+        }
+    ],
+    "outputParameters": []
+}
