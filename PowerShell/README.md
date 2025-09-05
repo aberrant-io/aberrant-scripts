@@ -1,4 +1,4 @@
-# aberrant-scripts
+# Aberrant Remote Agent Powershell Scripts
 Powershell scripts for the [Aberrant](https://www.aberrant.io/) RemoteAgent
 
 ## Contents
