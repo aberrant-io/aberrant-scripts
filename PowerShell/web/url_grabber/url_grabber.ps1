@@ -1,3 +1,19 @@
+<#
+.SYNOPSIS
+    Retrieves content from a specified URL and saves it to a file.
+
+.DESCRIPTION
+    This script takes a URL as a parameter, downloads the content from that URL, and saves it to a file in the Output directory. If a file with the same name already exists, it will be overwritten.
+
+.PARAMETER url
+    The URL from which to download content. This is a mandatory parameter.
+
+.EXAMPLE
+    .\url_grabber.ps1 -url "http://example.com"
+
+    This command will download the content from "http://example.com" and save it to a file in the Output directory.
+#>
+[CmdletBinding()]
 param (
     [Parameter(Mandatory=$true)]
     [string]$url
