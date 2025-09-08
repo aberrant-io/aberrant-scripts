@@ -1,0 +1,27 @@
+    {
+        "name": "Download Webpage",
+        "description": "Reads the HTML at the given URL and writes it to a file",
+        "fileName": "url_grabber.ps1",
+        "inputParameters": [
+            {
+                "direction": "IN",
+                "name": "url",
+                "label": "URL",
+                "description": "The full url for the site to fetch, e.g. https://example.com",
+                "parameterType": "string",
+                "parameterLength": 256,
+                "required": true
+            }
+        ],
+        "outputParameters": [
+            {
+                "direction": "OUT",
+                "name": "Url",
+                "label": "URL",
+                "description": "The URL that was fetched by this script",
+                "parameterType": "string",
+                "parameterLength": 256,
+                "scope": "GLOBAL"
+            }
+        ]
+    }

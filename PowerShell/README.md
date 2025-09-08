@@ -1,15 +1,16 @@
-# aberrant-scripts
+# Aberrant Remote Agent Powershell Scripts
 Powershell scripts for the [Aberrant](https://www.aberrant.io/) RemoteAgent
 
 ## Contents
 
-| Script| Description |
+| Folder| Description |
 | -------- | ------- |
-| github_users.ps1  | Connects to a github repository and writes a CSV of all users that have contributed to the repository (`GitHubUsers.csv`) and all users who have access repository (`GitHubCollaborators.csv`). Requires [github cli](https://cli.github.com/) to be installed and configured. |
-| url_grabber.ps1 | Accepts a url as a parameter and outputs the raw response from the url to a file (`downloaded_content.txt`) |
+| github  | Scripts for interacting with github.com |
+| jira  | Scripts for interacting with Atlassian Jira |
+| web | General scripts for making http and web requests |
 |  |  |
 
-## Adding Scripts
+## Contribution Guidelines
 
 ### Parameters
 Scripts with parameters _must_ decorate any required parameters with `[Parameter(Mandatory=$true)]`.

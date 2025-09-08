@@ -1,3 +1,22 @@
+<#
+.SYNOPSIS
+    Retrieves all users who have contributed to a specified GitHub repository and saves the information to a CSV file. Requires the GitHub CLI to be configured.
+
+.DESCRIPTION
+    This script takes the repository owner and name as parameters, fetches all contributors and collaborators using the GitHub CLI, and exports their details to CSV files in the Output directory.
+
+.PARAMETER owner
+    The owner of the GitHub repository (user or organization). This is a mandatory parameter.
+
+.PARAMETER repo
+    The name of the GitHub repository. This is a mandatory parameter.
+
+.EXAMPLE
+    .\github_users.ps1 -owner "octocat" -repo "Hello-World"
+
+    This command will retrieve all users who have contributed to the "Hello-World" repository owned by "octocat" and save the information to GitHubUsers.csv and GitHubCollaborators.csv in the Output directory.
+#>
+[CmdletBinding()]
 param(
     [Parameter(Mandatory=$true)]
     [string]$owner, # the repository owner (user or organization)
