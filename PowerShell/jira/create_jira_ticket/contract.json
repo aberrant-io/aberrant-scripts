@@ -5,6 +5,15 @@
     "inputParameters": [
         {
             "direction": "IN",
+            "name": "ProjectKey",
+            "label": "Project Key",
+            "description": "The Project Key (first part of the ticket number, e.g. PROJ in PROJ-123)",
+            "parameterType": "string",
+            "parameterLength": 10,
+            "required": true
+        },
+        {
+            "direction": "IN",
             "name": "TicketName",
             "label": "Ticket Name",
             "description": "The title of the Jira ticket to create",

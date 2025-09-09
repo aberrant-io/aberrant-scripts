@@ -5,6 +5,9 @@
 .DESCRIPTION
     This script takes a ticket name (summary) and a description as parameters and creates a new issue in a specified Jira project.
 
+.PARAMETER ProjectKey
+    The project key for the Jira ticket (e.g., PROJ). This is a mandatory parameter.
+
 .PARAMETER TicketName
     The summary or title of the Jira ticket. This is a mandatory parameter.
 
@@ -18,6 +21,9 @@
 #>
 [CmdletBinding()]
 param (
+    [Parameter(Mandatory = $true, HelpMessage = "Enter the project key for the Jira ticket (e.g., PROJ).")]
+    [string]$ProjectKey,
+
     [Parameter(Mandatory = $true, HelpMessage = "Enter the name/summary for the Jira ticket.")]
     [string]$TicketName,
 
@@ -30,9 +36,6 @@ param (
 
 # Your full Jira URL (e.g., https://aberrant.atlassian.net)
 $jiraUrl = "https://your-jira-url.atlassian.net"
-
-# The key for your Jira project (e.g., "PROJ", "TEST")
-$projectKey = "PROJ"
 
 $email = "user@example.com"
 $apiToken = "xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -55,7 +58,7 @@ try {
     $body = @{
         fields = @{
             project     = @{
-                key = $projectKey
+                key = $ProjectKey
             }
             summary     = $TicketName
             description = $TicketDescription
