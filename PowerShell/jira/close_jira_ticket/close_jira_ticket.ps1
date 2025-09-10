@@ -65,33 +65,32 @@ try {
     $apiUrl = "$jiraUrl/rest/api/2/issue/$TicketNumber/transitions"
     
     # Call the Jira REST API to transition the ticket
-    $response = Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -Body $body
+    Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -Body $body
 
-    if ($response) {
-        $ticketUrl = "$($jiraUrl)/browse/$TicketNumber"
+    $ticketUrl = "$($jiraUrl)/browse/$TicketNumber"
 
-        # The manifest of the things this script will output
-        # for uploading later
-        $OutputManifest = @{
-            Files = @()
-            Links = @($ticketUrl)
-        }
-        # Return any output parameters this script has to pass on 
-        # as defined by the contracts.config.json
-        $OutputParameters = @{
-            ClosedTicketNumber = $TicketNumber
-            ClosedTicketUrl = $ticketUrl
-        }
-
-        # Create the output wrapper object, wrapping the parameters and the Manifest
-        $ScriptOutput = @{
-            Parameters = $OutputParameters
-            Manifest = $OutputManifest
-        }
-
-        # write the output as json
-        Write-Output $ScriptOutput | ConvertTo-Json
+    # The manifest of the things this script will output
+    # for uploading later
+    $OutputManifest = @{
+        Files = @()
+        Links = @($ticketUrl)
     }
+    # Return any output parameters this script has to pass on 
+    # as defined by the contracts.config.json
+    $OutputParameters = @{
+        ClosedTicketNumber = $TicketNumber
+        ClosedTicketUrl = $ticketUrl
+    }
+
+    # Create the output wrapper object, wrapping the parameters and the Manifest
+    $ScriptOutput = @{
+        Parameters = $OutputParameters
+        Manifest = $OutputManifest
+    }
+
+    # write the output as json
+    Write-Output $ScriptOutput | ConvertTo-Json
+    
 }
 catch {
     Write-Error "An error occurred while closing the Jira ticket. $($_.Exception.Message)"
