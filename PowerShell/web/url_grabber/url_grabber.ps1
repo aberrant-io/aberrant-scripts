@@ -15,7 +15,7 @@
 #>
 [CmdletBinding()]
 param (
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory = $true)]
     [string]$url
 )
 
@@ -27,10 +27,21 @@ try {
     $uri = New-Object System.Uri($url)
     $tmpfilename = [System.IO.Path]::GetFileName($uri.AbsolutePath)
     if ([string]::IsNullOrEmpty($tmpfilename)) {
-        $tmpfilename = "downloaded_content.txt" # Default filename
+        $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+        $tmpfilename = "downloaded_content_$timestamp.txt" # Default filename with date and time
     }
+    
+    $RootFolder = Split-Path -Parent $PSScriptRoot
+    $OutputFolder = Join-Path -Path $RootFolder -ChildPath "Output"
 
-    $FilePath = ".\Output\$tmpfilename"
+    # check if output exists
+    if (-not (Test-Path -Path $OutputFolder)) {
+        # This throws a System.IO.DirectoryNotFoundException
+        throw [System.IO.DirectoryNotFoundException]::new("CRITICAL: The Output directory does not exist at: $OutputFolder")
+    }
+    
+    $FilePath = Join-Path -Path $OutputFolder -ChildPath $tmpfilename
+    
     # Check if the file exists
     if (Test-Path -Path $FilePath) {
         # Delete the existing file
@@ -51,11 +62,12 @@ try {
     # Create the output wrapper object, wrapping the parameters and the Manifest
     $ScriptOutput = @{
         Parameters = $OutputParameters
-        Manifest = $OutputManifest
+        Manifest   = $OutputManifest
     }
     # write the output as json
     Write-Output $ScriptOutput | ConvertTo-Json
 
-} catch {
+}
+catch {
     Write-Error "An error occurred: $($_.Exception.Message)"
 }
