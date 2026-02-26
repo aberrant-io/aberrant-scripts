@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Retrieves all users who have contributed to a specified GitHub repository and saves the information to a CSV file. Requires the GitHub CLI to be configured.
+    Retrieves all users who have contributed to a specified GitHub repository and saves the information to a CSV file. Requires a GitHub personal access token to be configured.
 
 .DESCRIPTION
     This script takes the repository owner and name as parameters, fetches all contributors and collaborators using the GitHub CLI, and exports their details to CSV files in the Output directory.
@@ -33,12 +33,31 @@ if(-not $repo){
     exit 1
 }
 
-# Requires the GitHub CLI (gh) to be installed and authenticated.
-# Install: https://cli.github.com/
+$GitHubToken = "GITHUB_PERSONAL_ACCESS_TOKEN_HERE" # or use $env:GITHUB_TOKEN
 
-# Configuration
-$FilePath = ".\Output\GitHubUsers.csv" # Path to save the CSV file
-$FilePath2 = ".\Output\GitHubCollaborators.csv" # Path to save the CSV file
+if (-not $GitHubToken) {
+    Write-Error "GitHubToken not found, either hard coded or via GITHUB_TOKEN environment variable. Please set it to a valid GitHub Personal Access Token."
+    exit 1
+}
+
+# Define Headers once
+$Headers = @{
+    "Authorization" = "token $GitHubToken"
+    "Accept"        = "application/vnd.github.v3+json"
+}
+
+$RootFolder = Split-Path -Parent $PSScriptRoot
+$OutputFolder = Join-Path -Path $RootFolder -ChildPath "Output"
+
+# check if output exists
+if (-not (Test-Path -Path $OutputFolder)) {
+    # This throws a System.IO.DirectoryNotFoundException
+    throw [System.IO.DirectoryNotFoundException]::new("CRITICAL: The Output directory does not exist at: $OutputFolder")
+}
+
+$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+$FilePath = Join-Path -Path $OutputFolder -ChildPath "GitHubUsers_$timestamp.csv" # Path to save the CSV file
+$FilePath2 = Join-Path -Path $OutputFolder -ChildPath "GitHubCollaborators_$timestamp.csv"  # Path to save the CSV file
 
 # Check if the files exists
 if (Test-Path -Path $FilePath) {
@@ -53,7 +72,7 @@ if (Test-Path -Path $FilePath2) {
 # The manifest of the things this script will output
 # for uploading later
 $OutputManifest = @{
-    Files = @("GitHubUsers.csv", "GitHubCollaborators.csv")
+    Files = @("GitHubUsers_$timestamp.csv", "GitHubCollaborators_$timestamp.csv")
     Links = @()
 }
 # Return any output parameters this script has to pass on 
@@ -64,7 +83,8 @@ $success = $true
 
 try {
     # Get all contributors to the repository
-    $contributors = gh api "/repos/$owner/$repo/contributors" | ConvertFrom-Json
+    $Uri = "https://api.github.com/repos/$owner/$repo/contributors"
+    $contributors = Invoke-RestMethod -Uri $Uri -Headers $Headers -Method Get
 
     # Extract relevant information and create objects
     $users = foreach ($contributor in $contributors) {
@@ -93,7 +113,8 @@ try {
 
 #Get all collaborators. This gets users who have direct access to the repository, regardless of contributions.
 try{
-    $collaborators = gh api "/repos/$owner/$repo/collaborators" | ConvertFrom-Json
+    $Uri = "https://api.github.com/repos/$owner/$repo/collaborators"
+    $collaborators = Invoke-RestMethod -Uri $Uri -Headers $Headers -Method Get
 
     $collaboratorUsers = foreach ($collaborator in $collaborators) {
         [PSCustomObject]@{
