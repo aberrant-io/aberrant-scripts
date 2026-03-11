@@ -5,6 +5,7 @@ Powershell scripts for the [Aberrant](https://www.aberrant.io/) RemoteAgent
 
 | Folder| Description |
 | -------- | ------- |
+| aws  | Scripts for interacting with AWS services |
 | github  | Scripts for interacting with github.com |
 | jira  | Scripts for interacting with Atlassian Jira |
 | web | General scripts for making http and web requests |

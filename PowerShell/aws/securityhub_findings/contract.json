@@ -1,0 +1,45 @@
+{
+    "name": "Get AWS Security Hub Findings",
+    "description": "Retrieves AWS Security Hub vulnerability findings for a specific AWS account and writes results to JSON",
+    "fileName": "securityhub_findings.ps1",
+    "inputParameters": [
+        {
+            "direction": "IN",
+            "name": "AwsAccountId",
+            "label": "AWS Account ID",
+            "description": "The AWS account ID to filter Security Hub findings (12 digits)",
+            "parameterType": "string",
+            "parameterLength": 12,
+            "required": true
+        },
+        {
+            "direction": "IN",
+            "name": "ComplianceStatus",
+            "label": "Compliance Status",
+            "description": "Compliance status filter for findings (PASSED, WARNING, FAILED, NOT_AVAILABLE, or ALL for no compliance filter)",
+            "parameterType": "string",
+            "parameterLength": 32,
+            "required": false
+        }
+    ],
+    "outputParameters": [
+        {
+            "direction": "OUT",
+            "name": "FindingsCount",
+            "label": "Findings Count",
+            "description": "The number of findings returned by the query",
+            "parameterType": "string",
+            "parameterLength": 12,
+            "scope": "GLOBAL"
+        },
+        {
+            "direction": "OUT",
+            "name": "FindingsFile",
+            "label": "Findings File",
+            "description": "The output file name containing Security Hub findings",
+            "parameterType": "string",
+            "parameterLength": 128,
+            "scope": "GLOBAL"
+        }
+    ]
+}
