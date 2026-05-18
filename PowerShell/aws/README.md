@@ -28,7 +28,7 @@ Powershell scripts for interacting with AWS services with the [Aberrant](https:/
 - Manifest file evidence: `SecurityHubFindings_<AccountId>_<Timestamp>.json`.
 
 ### Prerequisites
-- PowerShell 7+ (`pwsh`) recommended.
+- PowerShell 7+ (`pwsh`/`pwsh.exe`) required.
 - AWS account/role with permissions for:
   - `securityhub:GetFindings`
   - `sts:GetCallerIdentity`
@@ -36,14 +36,15 @@ Powershell scripts for interacting with AWS services with the [Aberrant](https:/
 - AWS Tools for PowerShell modules installed:
 
 ```powershell
-Install-Module AWS.Tools.Installer -Scope CurrentUser
-Install-AWSToolsModule SecurityHub,SecurityToken -Scope CurrentUser
+Install-Module AWS.Tools.Common -Scope AllUsers
+Install-Module AWS.Tools.SecurityToken -Scope AllUsers
+Install-Module AWS.Tools.SecurityHub -Scope AllUsers
 ```
 
 ### Credential configuration
 Edit the `USER CONFIGURATION` section in `securityhub_findings.ps1`. The script supports exactly one of these methods:
 - AWS profile:
-  - Set `$AwsProfileName` and optionally `$AwsRegion`.
+  - Set `$AwsProfileName` and verify `$AwsRegion`.
 - Static keys:
   - Set `$AwsAccessKey` and `$AwsSecretKey`.
   - Set `$AwsSessionToken` only if using temporary credentials.

@@ -19,7 +19,8 @@
             "description": "Compliance status filter for findings (PASSED, WARNING, FAILED, NOT_AVAILABLE, or ALL for no compliance filter)",
             "parameterType": "string",
             "parameterLength": 32,
-            "required": false
+            "required": false,
+            "defaultValue": "FAILED"
         }
     ],
     "outputParameters": [
