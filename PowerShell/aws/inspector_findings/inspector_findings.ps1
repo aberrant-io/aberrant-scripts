@@ -113,6 +113,7 @@ try {
         throw "AWS authentication failed. Configure AwsProfileName or AwsAccessKey/AwsSecretKey, or set environment/instance-role credentials. Details: $($_.Exception.Message)"
     }
 
+    # FilterCriteria properties are List<StringFilter> — requires explicit New-Object construction; hashtable cast-initializer does not work here.
     $filterCriteria = New-Object Amazon.Inspector2.Model.FilterCriteria
 
     $accountIdFilter = New-Object Amazon.Inspector2.Model.StringFilter
@@ -120,6 +121,7 @@ try {
     $accountIdFilter.Value = $AwsAccountId
     $filterCriteria.AwsAccountId = [System.Collections.Generic.List[Amazon.Inspector2.Model.StringFilter]]@($accountIdFilter)
 
+    # "ALL" is a local sentinel — the Inspector2 API has no equivalent; omitting the filter returns all statuses.
     if ($FindingStatus -ne "ALL") {
         $statusFilter = New-Object Amazon.Inspector2.Model.StringFilter
         $statusFilter.Comparison = "EQUALS"
@@ -127,7 +129,7 @@ try {
         $filterCriteria.FindingStatus = [System.Collections.Generic.List[Amazon.Inspector2.Model.StringFilter]]@($statusFilter)
     }
 
-    $allFindings = @()
+    $allFindings = [System.Collections.Generic.List[object]]::new()
     $nextToken = $null
 
     do {
@@ -144,7 +146,7 @@ try {
         $response = Get-INS2FindingList @request -NoAutoIteration -Select '*' -ErrorAction Stop
 
         if ($null -ne $response -and $null -ne $response.Findings) {
-            $allFindings += $response.Findings
+            $allFindings.AddRange($response.Findings)
         }
 
         $nextToken = if ($null -ne $response) { $response.NextToken } else { $null }
@@ -166,7 +168,7 @@ try {
     $outputFileName = "InspectorFindings_$($AwsAccountId)_$timestamp.json"
     $outputFilePath = ".\Output\$outputFileName"
 
-    $allFindings | ConvertTo-Json -Depth 20 | Set-Content -Path $outputFilePath -Encoding UTF8
+    $allFindings.ToArray() | ConvertTo-Json -Depth 20 | Set-Content -Path $outputFilePath -Encoding UTF8
 
     $OutputManifest = @{
         Files = @($outputFileName)
@@ -184,6 +186,6 @@ try {
     Write-Output ($ScriptOutput | ConvertTo-Json)
 }
 catch {
-    Write-Error "An error occurred while retrieving Inspector findings. $($_.Exception.Message)"
+    Write-Error "An error occurred while retrieving Inspector findings for account $AwsAccountId. $($_.Exception.Message)"
     exit 1
 }
