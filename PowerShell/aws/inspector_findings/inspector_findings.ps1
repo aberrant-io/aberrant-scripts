@@ -113,29 +113,26 @@ try {
         throw "AWS authentication failed. Configure AwsProfileName or AwsAccessKey/AwsSecretKey, or set environment/instance-role credentials. Details: $($_.Exception.Message)"
     }
 
-    # FilterCriteria properties are List<StringFilter> — requires explicit New-Object construction; hashtable cast-initializer does not work here.
-    $filterCriteria = New-Object Amazon.Inspector2.Model.FilterCriteria
-
+    # AWS Tools for PowerShell flattens FilterCriteria into individual parameters named FilterCriteria_<Field>.
     $accountIdFilter = New-Object Amazon.Inspector2.Model.StringFilter
     $accountIdFilter.Comparison = "EQUALS"
     $accountIdFilter.Value = $AwsAccountId
-    $filterCriteria.AwsAccountId = [System.Collections.Generic.List[Amazon.Inspector2.Model.StringFilter]]@($accountIdFilter)
-
-    # "ALL" is a local sentinel — the Inspector2 API has no equivalent; omitting the filter returns all statuses.
-    if ($FindingStatus -ne "ALL") {
-        $statusFilter = New-Object Amazon.Inspector2.Model.StringFilter
-        $statusFilter.Comparison = "EQUALS"
-        $statusFilter.Value = $FindingStatus
-        $filterCriteria.FindingStatus = [System.Collections.Generic.List[Amazon.Inspector2.Model.StringFilter]]@($statusFilter)
-    }
 
     $allFindings = [System.Collections.Generic.List[object]]::new()
     $nextToken = $null
 
     do {
         $request = @{
-            FilterCriteria = $filterCriteria
-            MaxResult      = 100
+            FilterCriteria_AwsAccountId = $accountIdFilter
+            MaxResult                   = 100
+        }
+
+        # "ALL" is a local sentinel — the Inspector2 API has no equivalent; omitting the filter returns all statuses.
+        if ($FindingStatus -ne "ALL") {
+            $statusFilter = New-Object Amazon.Inspector2.Model.StringFilter
+            $statusFilter.Comparison = "EQUALS"
+            $statusFilter.Value = $FindingStatus
+            $request.FilterCriteria_FindingStatus = $statusFilter
         }
 
         if (-not [string]::IsNullOrWhiteSpace($nextToken)) {
