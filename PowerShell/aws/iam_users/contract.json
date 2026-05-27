@@ -1,0 +1,35 @@
+{
+    "name": "Get AWS IAM Users",
+    "description": "Retrieves all IAM users for the authenticated AWS account with full attribute set and writes results to JSON",
+    "fileName": "iam_users.ps1",
+    "inputParameters": [],
+    "outputParameters": [
+        {
+            "direction": "OUT",
+            "name": "UserCount",
+            "label": "User Count",
+            "description": "The number of IAM users returned",
+            "parameterType": "string",
+            "parameterLength": 12,
+            "scope": "GLOBAL"
+        },
+        {
+            "direction": "OUT",
+            "name": "UsersFile",
+            "label": "Users File",
+            "description": "The output file name containing IAM user data",
+            "parameterType": "string",
+            "parameterLength": 128,
+            "scope": "GLOBAL"
+        },
+        {
+            "direction": "OUT",
+            "name": "AccountId",
+            "label": "Account ID",
+            "description": "The AWS account ID from which users were retrieved",
+            "parameterType": "string",
+            "parameterLength": 12,
+            "scope": "GLOBAL"
+        }
+    ]
+}

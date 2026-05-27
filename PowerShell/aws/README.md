@@ -7,6 +7,7 @@ Powershell scripts for interacting with AWS services with the [Aberrant](https:/
 | -------- | ------- |
 | securityhub_findings.ps1  | Retrieves AWS Security Hub findings filtered by account ID and optional compliance status, and writes findings to `Output/SecurityHubFindings_<AccountId>_<Timestamp>.json`. |
 | inspector_findings.ps1  | Retrieves AWS Inspector v2 findings directly, filtered by account ID and optional finding status, and writes findings to `Output/InspectorFindings_<AccountId>_<Timestamp>.json`. |
+| iam_users.ps1  | Retrieves all IAM users for the authenticated AWS account with full attribute set (access keys, MFA devices, groups, policies, tags, console access), and writes results to `Output/IamUsers_<AccountId>_<Timestamp>.json`. |
 
 ## Script: securityhub_findings.ps1
 
@@ -129,6 +130,81 @@ Validation guardrails in the script:
 
 ```powershell
 .\inspector_findings.ps1 -AwsAccountId "123456789012" -FindingStatus "ALL"
+```
+
+### Error handling behavior
+- Success:
+  - Writes only the output manifest JSON to stdout.
+- Failure:
+  - Writes clear actionable error details to stderr.
+  - Exits with non-zero status (`exit 1`).
+
+---
+
+## Script: iam_users.ps1
+
+### What it does
+- Lists all IAM users in the authenticated account with `Get-IAMUserList`.
+- Handles paging (`Marker`/`IsTruncated`) to collect all users.
+- Enriches each user with a full attribute set via additional IAM API calls:
+  - Access keys (`Get-IAMAccessKey`)
+  - MFA devices (`Get-IAMMFADevice`)
+  - Group memberships (`Get-IAMGroupForUser`)
+  - Attached managed policies (`Get-IAMAttachedUserPolicy`)
+  - Inline policy names (`Get-IAMUserPolicyList`)
+  - Tags (`Get-IAMUserTag`)
+  - Console login profile existence (`Get-IAMLoginProfile`)
+- Derives the account ID from `Get-STSCallerIdentity` — no account ID parameter required.
+- Writes all user data to an evidence file in `.\Output`.
+- Returns only the RemoteAgent output manifest JSON to stdout.
+
+### Inputs (contract)
+- None. The script takes no input parameters. Auth is configured in the `USER CONFIGURATION` section of the script.
+
+### Outputs (contract)
+- Output parameter `UserCount`: Number of IAM users returned.
+- Output parameter `UsersFile`: The generated users filename.
+- Output parameter `AccountId`: The AWS account ID users were retrieved from.
+- Manifest file evidence: `IamUsers_<AccountId>_<Timestamp>.json`.
+
+### Prerequisites
+- PowerShell 7+ (`pwsh`/`pwsh.exe`) required.
+- AWS account/role with permissions for:
+  - `iam:ListUsers`
+  - `iam:ListAccessKeys`
+  - `iam:ListMFADevices`
+  - `iam:ListGroupsForUser`
+  - `iam:ListAttachedUserPolicies`
+  - `iam:ListUserPolicies`
+  - `iam:ListUserTags`
+  - `iam:GetLoginProfile`
+  - `sts:GetCallerIdentity`
+- AWS Tools for PowerShell modules installed:
+
+```powershell
+Install-Module AWS.Tools.Common -Scope AllUsers
+Install-Module AWS.Tools.SecurityToken -Scope AllUsers
+Install-Module AWS.Tools.IdentityManagement -Scope AllUsers
+```
+
+### Credential configuration
+Edit the `USER CONFIGURATION` section in `iam_users.ps1`. The script supports exactly one of these methods:
+- AWS profile:
+  - Set `$AwsProfileName` and verify `$AwsRegion`.
+- Static keys:
+  - Set `$AwsAccessKey` and `$AwsSecretKey`.
+  - Set `$AwsSessionToken` only if using temporary credentials.
+- Default AWS credential chain:
+  - Leave profile/keys blank and rely on environment/instance role credentials.
+
+Validation guardrails in the script:
+- Fails if profile and key-based auth are both configured.
+- Fails if only one of access key/secret key is provided.
+- Fails if session token is set without access key/secret key.
+
+### Example run
+```powershell
+.\iam_users.ps1
 ```
 
 ### Error handling behavior
